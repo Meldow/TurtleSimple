@@ -4,6 +4,8 @@ namespace Turtle.Core
     {
         IVector2 Location { get; set; }
 
+        public IVector2 Direction { get; set; }
+
         void Move();
 
         void Rotate();

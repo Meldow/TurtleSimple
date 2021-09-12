@@ -7,40 +7,85 @@
     using Turtle.Core;
     using Turtle.Exceptions;
     using Turtle.GameManagement;
-    using Turtle.GameObjects;
+    using Turtle.GameObjects.InputDTO;
 
     class Program
     {
         public static async Task Main(string[] args)
         {
-            var gameBoardDto = await CreateGameBoardDto(args);
+            var gameSettingsStreamReader = new StreamReader(args[0]);
+            var gameBoardDto = await CreateGameBoardDto(gameSettingsStreamReader);
+            gameSettingsStreamReader.Close();
             var gameManager = new GameManager(gameBoardDto);
 
             var movesStreamReader = new StreamReader(args[1]);
-            await gameManager.GameLoop(movesStreamReader);
+            ExecuteMoves(movesStreamReader, gameManager);
             movesStreamReader.Close();
         }
 
-        private static async Task<GameBoardDTO> CreateGameBoardDto(string[] args)
+        private static async Task<GameBoardDTO> CreateGameBoardDto(StreamReader gameSettingsStreamReader)
         {
-            var gameSettingsStreamReader = new StreamReader(args[0]);
-
             var boardSizeTokens = (await gameSettingsStreamReader.ReadLineAsync())?.Split(',');
             var boardSize = new Vector2(int.Parse(boardSizeTokens[0]), int.Parse(boardSizeTokens[1]));
 
             var inputTurtleTransformTokens = (await gameSettingsStreamReader.ReadLineAsync())?.Split(',');
-            var turtleTransform = new Transform(
-                new Vector2(
-                    int.Parse(inputTurtleTransformTokens[0]),
-                    int.Parse(inputTurtleTransformTokens[1])),
-                ParseDirection(inputTurtleTransformTokens[2]));
+            var turtleLocation = new Vector2(
+                int.Parse(inputTurtleTransformTokens[0]),
+                int.Parse(inputTurtleTransformTokens[1]));
+            var turtleDirection = ParseDirection(inputTurtleTransformTokens[2]);
 
             var (minesLocations, exitsLocations) = await ParseGameObjectsAsync(gameSettingsStreamReader);
 
-            var gameBoardDto = new GameBoardDTO(boardSize, turtleTransform, minesLocations, exitsLocations);
+            var gameBoardDto = new GameBoardDTO(boardSize, turtleLocation, turtleDirection, minesLocations, exitsLocations);
 
-            gameSettingsStreamReader.Close();
             return gameBoardDto;
+        }
+
+        private static void ExecuteMoves(StreamReader movesStreamReader, GameManager gameManager)
+        {
+            try
+            {
+                int mInt = 'm';
+                int rInt = 'r';
+                int newLineInt = '\n';
+                int sequence = 1;
+
+                // Checks next char not new line or empty
+                while (movesStreamReader.Peek() >= 0)
+                {
+                    var move = movesStreamReader.Read();
+
+                    if (move == mInt)
+                    {
+                        gameManager.MoveTurtle();
+                    }
+                    else if (move == rInt)
+                    {
+                        gameManager.RotateTurtle();
+                    }
+                    else
+                    {
+                        throw new UnexpectedInputException("Unexpected move input, only 'm' and 'r' are acceptable.", move);
+                    }
+
+                    if (gameManager.IsGameRunning())
+                    {
+                        continue;
+                    }
+
+                    Console.WriteLine($"Sequence {sequence}: {gameManager.GetEndGameMessage()}");
+                    sequence += 1;
+                    gameManager.ResetBoard();
+
+                    while (move != newLineInt && movesStreamReader.Read() != newLineInt && movesStreamReader.Peek() >= 0)
+                    {
+                    }
+                }
+            }
+            catch (UnexpectedInputException exception)
+            {
+                Console.WriteLine($"{exception.Message} Skipping set. | Input: '{exception.Input}'");
+            }
         }
 
         private static IVector2 ParseDirection(string direction) => direction switch

@@ -2,11 +2,10 @@ namespace Turtle.GameManagement
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
     using Turtle.Core;
     using Turtle.Exceptions;
     using Turtle.GameObjects;
+    using Turtle.GameObjects.InputDTO;
     using Turtle.GameObjects.Movable;
     using Turtle.GameObjects.Static;
 
@@ -15,6 +14,8 @@ namespace Turtle.GameManagement
         private IGameBoard gameBoard;
         private ITurtle turtle;
         private GameState gameState = GameState.Running;
+
+        private ITransform turtleStartingTransform;
 
         private enum GameState
         {
@@ -27,7 +28,20 @@ namespace Turtle.GameManagement
         public GameManager(GameBoardDTO gameBoardDto)
         {
             this.gameBoard = new GameBoard(gameBoardDto.Size);
-            this.turtle = new Turtle(gameBoardDto.TurtleTransform);
+            this.turtle = new Turtle(new Transform(
+                new Vector2(
+                    gameBoardDto.TurtleLocation.X,
+                    gameBoardDto.TurtleLocation.Y),
+                new Vector2(
+                    gameBoardDto.TurtleDirection.X,
+                    gameBoardDto.TurtleDirection.Y)));
+            this.turtleStartingTransform = new Transform(
+                new Vector2(
+                    gameBoardDto.TurtleLocation.X,
+                    gameBoardDto.TurtleLocation.Y),
+                new Vector2(
+                    gameBoardDto.TurtleDirection.X,
+                    gameBoardDto.TurtleDirection.Y));
 
             try
             {
@@ -44,42 +58,62 @@ namespace Turtle.GameManagement
             PopulateBoard(this.gameBoard, gameBoardDto.MinesLocations, gameBoardDto.ExitsLocations);
         }
 
-        public async Task GameLoop(StreamReader inputMoves)
+        public void GameLoop(ActionsDTO actionsDto)
         {
-            try
+            foreach (var move in actionsDto.Actions)
             {
-                string readLine;
-                while ((readLine = await inputMoves.ReadLineAsync()) != null)
+                if (move is Move)
                 {
-                    if (readLine == "m")
-                    {
-                        this.turtle.Move();
-                    }
-                    else if (readLine == "r")
-                    {
-                        this.turtle.Rotate();
-                    }
-                    else
-                    {
-                        throw new UnexpectedInputException(
-                            "Unexpected move input, only 'm' and 'r' are acceptable.",
-                            readLine);
-                    }
-
-                    this.UpdateGameState();
-
-                    if (this.gameState != GameState.Running)
-                    {
-                        break;
-                    }
+                    this.turtle.Move();
                 }
-            }
-            catch (UnexpectedInputException exception)
-            {
-                Console.WriteLine($"{exception.Message} | Input: '{exception.Input}'");
+                else if (move is Rotate)
+                {
+                    this.turtle.Rotate();
+                }
+
+                this.UpdateGameState();
+
+                if (this.gameState != GameState.Running)
+                {
+                    break;
+                }
             }
 
             OutputFinalGameState(this.gameState, this.turtle.Transform.Location);
+            this.ResetBoard();
+        }
+
+        public void MoveTurtle()
+        {
+            this.turtle.Move();
+            this.UpdateGameState();
+        }
+
+        public void RotateTurtle()
+        {
+            this.turtle.Rotate();
+            this.UpdateGameState();
+        }
+
+        public bool IsGameRunning() => this.gameState == GameState.Running;
+
+        public string GetEndGameMessage() => this.gameState switch
+        {
+            GameState.Running => "Turtle did not manage to escape, still in danger!",
+            GameState.FoundExit => "Turtle escaped successfully!",
+            GameState.HitMine => "Mine hit!",
+            GameState.TurtleDroppedOut =>
+                $"Turtle dropped into the void! | Location: [{this.turtle.Transform.Location.X},{this.turtle.Transform.Location.Y}]",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        public void ResetBoard()
+        {
+            this.turtle.Transform.Location.X = this.turtleStartingTransform.Location.X;
+            this.turtle.Transform.Location.Y = this.turtleStartingTransform.Location.Y;
+            this.turtle.Transform.Direction.X = this.turtleStartingTransform.Direction.X;
+            this.turtle.Transform.Direction.Y = this.turtleStartingTransform.Direction.Y;
+            this.gameState = GameState.Running;
         }
 
         private static void OutputFinalGameState(GameState gameState, IVector2 turtleLocation)

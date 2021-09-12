@@ -1,10 +1,17 @@
 namespace Turtle.GameManagement
 {
-    using System.IO;
-    using System.Threading.Tasks;
+    using Turtle.GameObjects.InputDTO;
 
     public interface IGameManager
     {
-        Task GameLoop(StreamReader inputMoves);
+        void GameLoop(ActionsDTO actionsDto);
+
+        void MoveTurtle();
+
+        void RotateTurtle();
+
+        bool IsGameRunning();
+
+        string GetEndGameMessage();
     }
 }

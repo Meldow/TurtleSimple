@@ -5,6 +5,7 @@ namespace Turtle.Exceptions
     public class UnexpectedInputException : Exception
     {
         public string Input { get; }
+        public int InputChar { get; }
 
         public UnexpectedInputException()
         {
@@ -24,6 +25,12 @@ namespace Turtle.Exceptions
             : this(message)
         {
             this.Input = input;
+        }
+
+        public UnexpectedInputException(string message, int input)
+            : this(message)
+        {
+            this.InputChar = input;
         }
     }
 }
