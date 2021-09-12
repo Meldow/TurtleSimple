@@ -43,15 +43,15 @@
 
         private static void ExecuteMoves(StreamReader movesStreamReader, GameManager gameManager)
         {
-            try
-            {
-                int mInt = 'm';
-                int rInt = 'r';
-                int newLineInt = '\n';
-                int sequence = 1;
+            int mInt = 'm';
+            int rInt = 'r';
+            int newLineInt = '\n';
+            var sequence = 1;
 
-                // Checks next char not new line or empty
-                while (movesStreamReader.Peek() >= 0)
+            // Checks next char not new line or empty
+            while (movesStreamReader.Peek() >= 0)
+            {
+                try
                 {
                     var move = movesStreamReader.Read();
 
@@ -65,7 +65,9 @@
                     }
                     else
                     {
-                        throw new UnexpectedInputException("Unexpected move input, only 'm' and 'r' are acceptable.", move);
+                        sequence += 1;
+                        throw new UnexpectedInputException(
+                            $"Sequence {sequence - 1} Unexpected move input. Only 'm' and 'r' are acceptable.", move);
                     }
 
                     if (gameManager.IsGameRunning())
@@ -81,10 +83,10 @@
                     {
                     }
                 }
-            }
-            catch (UnexpectedInputException exception)
-            {
-                Console.WriteLine($"{exception.Message} Skipping set. | Input: '{exception.Input}'");
+                catch (UnexpectedInputException exception)
+                {
+                    Console.WriteLine($"{exception.Message} Skipping line. | Input: '{exception.Input}'");
+                }
             }
         }
 
