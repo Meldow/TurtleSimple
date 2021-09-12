@@ -11,11 +11,11 @@ namespace Turtle.GameObjects
         private readonly int ySize;
         private IGameObject[,] tiles { get; }
 
-        public GameBoard(int xSize, int ySize)
+        public GameBoard(IVector2 size)
         {
-            this.xSize = xSize;
-            this.ySize = ySize;
-            this.tiles = new IGameObject[xSize + 1, ySize + 1]; // Add +1 to size to take into account 0 based arrays
+            this.xSize = size.X;
+            this.ySize = size.Y;
+            this.tiles = new IGameObject[size.X + 1, size.Y + 1]; // Add +1 to size to take into account 0 based arrays
         }
 
         public void AddGameObject(IGameObject gameObject, IVector2 location)

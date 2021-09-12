@@ -5,8 +5,6 @@ namespace Turtle.GameManagement
 
     public interface IGameManager
     {
-        Task Setup(StreamReader inputGameSettings);
-
         Task GameLoop(StreamReader inputMoves);
     }
 }

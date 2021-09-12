@@ -1,6 +1,7 @@
 namespace Turtle.GameManagement
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
     using Turtle.Core;
@@ -23,11 +24,24 @@ namespace Turtle.GameManagement
             TurtleDroppedOut,
         }
 
-        public async Task Setup(StreamReader inputGameSettings)
+        public GameManager(GameBoardDTO gameBoardDto)
         {
-            this.gameBoard = await CreateGameBoard(inputGameSettings);
-            this.turtle = await CreateTurtle(inputGameSettings, this.gameBoard);
-            await PopulateBoard(inputGameSettings, this.gameBoard);
+            this.gameBoard = new GameBoard(gameBoardDto.Size);
+            this.turtle = new Turtle(gameBoardDto.TurtleTransform);
+
+            try
+            {
+                this.gameBoard.ValidatePosition(this.turtle.Transform.Location);
+            }
+            catch (OutOfBoardException exception)
+            {
+                Console.WriteLine(
+                    $"{exception.Message} | Location: [{exception.Location.X},{exception.Location.Y}] , Object: [{exception.GameObject}]");
+
+                throw;
+            }
+
+            PopulateBoard(this.gameBoard, gameBoardDto.MinesLocations, gameBoardDto.ExitsLocations);
         }
 
         public async Task GameLoop(StreamReader inputMoves)
@@ -90,77 +104,19 @@ namespace Turtle.GameManagement
             }
         }
 
-        private static IVector2 ParseDirection(string direction) => direction switch
+        private static void PopulateBoard(
+            IGameBoard gameBoard,
+            IEnumerable<IVector2> minesLocations,
+            IEnumerable<IVector2> exitsLocations)
         {
-            "North" => Transform.North,
-            "East" => Transform.East,
-            "South" => Transform.South,
-            "West" => Transform.West,
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(direction),
-                $"Not expected direction value: {direction}. Valid directions 'North', 'East', 'South' or 'West'"),
-        };
-
-        private static async Task<GameBoard> CreateGameBoard(StreamReader inputGameSettings)
-        {
-            var boardSize = (await inputGameSettings.ReadLineAsync())?.Split(',');
-            return new GameBoard(
-                int.Parse(boardSize[0]),
-                int.Parse(boardSize[1]));
-        }
-
-        private static async Task<Turtle> CreateTurtle(StreamReader inputGameSettings, IGameBoard gameBoard)
-        {
-            try
+            foreach (var mineLocation in minesLocations)
             {
-                var turtleLocation = (await inputGameSettings.ReadLineAsync())?.Split(',');
-                var transform = new Transform(
-                    new Vector2(
-                        int.Parse(turtleLocation[0]),
-                        int.Parse(turtleLocation[1])));
-                gameBoard.ValidatePosition(transform.Location);
-
-                return new Turtle(transform);
+                gameBoard.AddGameObject(new Mine(), mineLocation);
             }
-            catch (OutOfBoardException exception)
+
+            foreach (var exitLocation in exitsLocations)
             {
-                Console.WriteLine(
-                    $"{exception.Message} | Location: [{exception.Location.X},{exception.Location.Y}] , Object: [{exception.GameObject}]");
-
-                throw;
-            }
-        }
-
-        private static async Task PopulateBoard(StreamReader inputGameSettings, IGameBoard gameBoard)
-        {
-            string readLine;
-            while ((readLine = await inputGameSettings.ReadLineAsync()) != null)
-            {
-                try
-                {
-                    var input = readLine.Split(',');
-                    var transform = new Vector2(
-                        int.Parse(input[1]),
-                        int.Parse(input[2]));
-
-                    switch (input[0])
-                    {
-                        case "m":
-                            gameBoard.AddGameObject(new Mine(), transform);
-                            break;
-                        case "e":
-                            gameBoard.AddGameObject(new Exit(), transform);
-                            break;
-                        default:
-                            throw new UnexpectedInputException(
-                                "Unexpected object input, only 'm' and 'e' are acceptable.",
-                                readLine);
-                    }
-                }
-                catch (UnexpectedInputException exception)
-                {
-                    Console.WriteLine($"{exception.Message} Skipping this one. | Input: [{exception.Input}]");
-                }
+                gameBoard.AddGameObject(new Exit(), exitLocation);
             }
         }
 
