@@ -17,8 +17,6 @@
             var movesStreamReader = new StreamReader(args[1]);
             await gameManager.GameLoop(movesStreamReader);
             movesStreamReader.Close();
-
-            gameManager.OutputFinalGameState();
         }
     }
 }

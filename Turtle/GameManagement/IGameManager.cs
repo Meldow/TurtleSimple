@@ -8,7 +8,5 @@ namespace Turtle.GameManagement
         Task Setup(StreamReader inputGameSettings);
 
         Task GameLoop(StreamReader inputMoves);
-
-        void OutputFinalGameState();
     }
 }

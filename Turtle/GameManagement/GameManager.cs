@@ -13,9 +13,9 @@ namespace Turtle.GameManagement
     {
         private IGameBoard gameBoard;
         private ITurtle turtle;
-        private State gameState = State.Running;
+        private GameState gameState = GameState.Running;
 
-        private enum State
+        private enum GameState
         {
             Running,
             FoundExit,
@@ -52,9 +52,9 @@ namespace Turtle.GameManagement
                             readLine);
                     }
 
-                    this.UpdateGameState(this.gameBoard, this.turtle);
+                    this.UpdateGameState();
 
-                    if (this.gameState != State.Running)
+                    if (this.gameState != GameState.Running)
                     {
                         break;
                     }
@@ -64,52 +64,29 @@ namespace Turtle.GameManagement
             {
                 Console.WriteLine($"{exception.Message} | Input: '{exception.Input}'");
             }
-            finally
-            {
-                inputMoves.Close();
-            }
+
+            OutputFinalGameState(this.gameState, this.turtle.Transform.Location);
         }
 
-        public void OutputFinalGameState()
+        private static void OutputFinalGameState(GameState gameState, IVector2 turtleLocation)
         {
-            switch (this.gameState)
+            switch (gameState)
             {
-                case State.Running:
+                case GameState.Running:
                     Console.WriteLine("Turtle did not manage to escape, still in danger!");
                     break;
-                case State.FoundExit:
+                case GameState.FoundExit:
                     Console.WriteLine("Turtle escaped successfully!");
                     break;
-                case State.HitMine:
+                case GameState.HitMine:
                     Console.WriteLine("Mine hit!");
                     break;
-                case State.TurtleDroppedOut:
+                case GameState.TurtleDroppedOut:
                     Console.WriteLine(
-                        $"Turtle dropped into the void! | Location: [{this.turtle.Transform.Location.X},{this.turtle.Transform.Location.Y}]");
+                        $"Turtle dropped into the void! | Location: [{turtleLocation.X},{turtleLocation.Y}]");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void UpdateGameState(IGameBoard gameBoard, ITurtle turtle)
-        {
-            try
-            {
-                var turtleLocationGameObject = gameBoard.GetGameObject(turtle.Transform.Location);
-
-                if (turtleLocationGameObject is Mine)
-                {
-                    this.gameState = State.HitMine;
-                }
-                else if (turtleLocationGameObject is Exit)
-                {
-                    this.gameState = State.FoundExit;
-                }
-            }
-            catch (OutOfBoardException)
-            {
-                this.gameState = State.TurtleDroppedOut;
             }
         }
 
@@ -184,6 +161,27 @@ namespace Turtle.GameManagement
                 {
                     Console.WriteLine($"{exception.Message} Skipping this one. | Input: [{exception.Input}]");
                 }
+            }
+        }
+
+        private void UpdateGameState()
+        {
+            try
+            {
+                var turtleLocationGameObject = this.gameBoard.GetGameObject(this.turtle.Transform.Location);
+
+                if (turtleLocationGameObject is Mine)
+                {
+                    this.gameState = GameState.HitMine;
+                }
+                else if (turtleLocationGameObject is Exit)
+                {
+                    this.gameState = GameState.FoundExit;
+                }
+            }
+            catch (OutOfBoardException)
+            {
+                this.gameState = GameState.TurtleDroppedOut;
             }
         }
     }
