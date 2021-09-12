@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using Turtle.Core;
     using Turtle.Exceptions;
@@ -35,17 +36,16 @@
             var turtleDirection = ParseDirection(inputTurtleTransformTokens[2]);
 
             var (minesLocations, exitsLocations) = await ParseGameObjectsAsync(gameSettingsStreamReader);
-
             var gameBoardDto = new GameBoardDTO(boardSize, turtleLocation, turtleDirection, minesLocations, exitsLocations);
 
             return gameBoardDto;
         }
 
-        private static void ExecuteMoves(StreamReader movesStreamReader, GameManager gameManager)
+        private static void ExecuteMoves(StreamReader movesStreamReader, IGameManager gameManager)
         {
-            int mInt = 'm';
-            int rInt = 'r';
-            int newLineInt = '\n';
+            const int mInt = 'm';
+            const int rInt = 'r';
+            const int newLineInt = '\n';
             var sequence = 1;
 
             // Checks next char not new line or empty
@@ -55,19 +55,21 @@
                 {
                     var move = movesStreamReader.Read();
 
-                    if (move == mInt)
+                    switch (move)
                     {
-                        gameManager.MoveTurtle();
-                    }
-                    else if (move == rInt)
-                    {
-                        gameManager.RotateTurtle();
-                    }
-                    else
-                    {
-                        sequence += 1;
-                        throw new UnexpectedInputException(
-                            $"Sequence {sequence - 1} Unexpected move input. Only 'm' and 'r' are acceptable.", move);
+                        case mInt:
+                            gameManager.MoveTurtle();
+                            break;
+                        case rInt:
+                            gameManager.RotateTurtle();
+                            break;
+                        case newLineInt:
+                            gameManager.ForfeitRun();
+                            break;
+                        default:
+                            sequence += 1;
+                            throw new UnexpectedInputException(
+                                $"Sequence {sequence - 1} Unexpected move input. Only 'm' and 'r' are acceptable.", move);
                     }
 
                     if (gameManager.IsGameRunning())

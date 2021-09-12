@@ -23,6 +23,7 @@ namespace Turtle.GameManagement
             FoundExit,
             HitMine,
             TurtleDroppedOut,
+            ForfeitRun,
         }
 
         public GameManager(GameBoardDTO gameBoardDto)
@@ -97,9 +98,14 @@ namespace Turtle.GameManagement
 
         public bool IsGameRunning() => this.gameState == GameState.Running;
 
+        public void ForfeitRun()
+        {
+            this.gameState = GameState.ForfeitRun;
+        }
+
         public string GetEndGameMessage() => this.gameState switch
         {
-            GameState.Running => "Turtle did not manage to escape, still in danger!",
+            GameState.ForfeitRun => "Turtle did not manage to escape, still in danger!",
             GameState.FoundExit => "Turtle escaped successfully!",
             GameState.HitMine => "Mine hit!",
             GameState.TurtleDroppedOut =>

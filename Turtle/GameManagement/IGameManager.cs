@@ -12,6 +12,10 @@ namespace Turtle.GameManagement
 
         bool IsGameRunning();
 
+        void ForfeitRun();
+
         string GetEndGameMessage();
+
+        void ResetBoard();
     }
 }
