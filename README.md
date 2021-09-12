@@ -1,14 +1,25 @@
 # TurtleSimple
 
-## Program
-Reads input, creates DTOs and executes GameManager Loop
+## Classes description
+### Program
+- Reads input 
+- creates DTOs
+- executes GameManager actions per char read
+- uses GameManager to orchestrate all the work
+
+### GameManager
+Contains a GameBoard and Turtle. Validates gamestate by checking colisions.
+
+### GameBoard
+Contains a matrix (2x2 array) with all the game objects that exist in the game.
+
+### ITransform
+Inspired in Unity3D, contains Vec2 for Location and Rotation
+
+### IMovable (Turtle)
+- Contains Rotate and Move methods
+- Contains a Transform
 
 ## Performance
-O(2n) since it parses throught N actions twice
-- First to create the list of Actions to be later executed
-- Second when executing said Actions
+O(n) since it parses throught all moves once
 
-These could be merged into a single moment, improving the algorithm by
-directly calling the actions upon reading instruction.
-
-I took the deliberate decision to separate these two, so it eases
