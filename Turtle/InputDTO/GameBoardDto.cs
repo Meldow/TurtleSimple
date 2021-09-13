@@ -1,16 +1,16 @@
-namespace Turtle.GameObjects.InputDTO
+namespace Turtle.InputDTO
 {
     using System.Collections.Generic;
     using Turtle.Core;
 
-    public class GameBoardDTO
+    public class GameBoardDto
     {
         public readonly IVector2 Size;
         public readonly ITransform TurtleTransform;
         public readonly IEnumerable<IVector2> MinesLocations;
         public readonly IEnumerable<IVector2> ExitsLocations;
 
-        public GameBoardDTO(
+        public GameBoardDto(
             IVector2 size,
             ITransform turtleTransform,
             IEnumerable<IVector2> minesLocations,

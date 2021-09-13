@@ -1,12 +1,13 @@
-namespace Turtle.GameObjects.InputDTO
+namespace Turtle.InputDTO
 {
     using System.Collections.Generic;
+    using Turtle.Actions;
 
-    public class ActionsDTO
+    public class ActionsDto
     {
         public IEnumerable<IAction> Actions { get; set; }
 
-        public ActionsDTO(IEnumerable<IAction> actions)
+        public ActionsDto(IEnumerable<IAction> actions)
         {
             this.Actions = actions;
         }

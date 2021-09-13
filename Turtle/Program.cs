@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
     using Turtle.Exceptions;
     using Turtle.GameManagement;
-    using Turtle.GameObjects.InputDTO;
+    using Turtle.InputDTO;
     using Turtle.InputManagement;
     using Action = Turtle.InputManagement.Action;
 
@@ -16,7 +16,7 @@
             ExecuteMoves(args[1], gameManager);
         }
 
-        private static async Task<GameBoardDTO> CreateGameBoardDto(string gameSettingsFileName)
+        private static async Task<GameBoardDto> CreateGameBoardDto(string gameSettingsFileName)
         {
             using var fileParser = new GameSettingsFileParser(gameSettingsFileName);
 
@@ -24,7 +24,7 @@
             var turtleTransform = await fileParser.ParseTurtleLocationAndDirection();
             var (minesLocations, exitsLocations) = await fileParser.ParseStaticGameObjectsLocations();
 
-            return new GameBoardDTO(boardSize, turtleTransform, minesLocations, exitsLocations);
+            return new GameBoardDto(boardSize, turtleTransform, minesLocations, exitsLocations);
         }
 
         private static void ExecuteMoves(string movesFileName, IGameManager gameManager)

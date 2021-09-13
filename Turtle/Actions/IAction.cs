@@ -1,4 +1,4 @@
-namespace Turtle.GameObjects.InputDTO
+namespace Turtle.Actions
 {
     public interface IAction
     {

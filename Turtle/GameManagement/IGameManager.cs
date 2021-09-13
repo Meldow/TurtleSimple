@@ -1,10 +1,10 @@
 namespace Turtle.GameManagement
 {
-    using Turtle.GameObjects.InputDTO;
+    using Turtle.InputDTO;
 
     public interface IGameManager
     {
-        void GameLoop(ActionsDTO actionsDto);
+        void GameLoop(ActionsDto actionsDto);
 
         void MoveTurtle();
 

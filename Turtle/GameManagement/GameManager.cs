@@ -2,12 +2,13 @@ namespace Turtle.GameManagement
 {
     using System;
     using System.Collections.Generic;
+    using Turtle.Actions;
     using Turtle.Core;
     using Turtle.Exceptions;
     using Turtle.GameObjects;
-    using Turtle.GameObjects.InputDTO;
     using Turtle.GameObjects.Movable;
     using Turtle.GameObjects.Static;
+    using Turtle.InputDTO;
 
     public class GameManager : IGameManager
     {
@@ -26,7 +27,7 @@ namespace Turtle.GameManagement
             ForfeitRun,
         }
 
-        public GameManager(GameBoardDTO gameBoardDto)
+        public GameManager(GameBoardDto gameBoardDto)
         {
             this.gameBoard = new GameBoard(gameBoardDto.Size);
 
@@ -61,7 +62,7 @@ namespace Turtle.GameManagement
             PopulateBoard(this.gameBoard, gameBoardDto.MinesLocations, gameBoardDto.ExitsLocations);
         }
 
-        public void GameLoop(ActionsDTO actionsDto)
+        public void GameLoop(ActionsDto actionsDto)
         {
             foreach (var move in actionsDto.Actions)
             {
