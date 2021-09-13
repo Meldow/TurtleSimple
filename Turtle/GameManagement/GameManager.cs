@@ -2,6 +2,7 @@ namespace Turtle.GameManagement
 {
     using System;
     using System.Collections.Generic;
+    using Dawn;
     using Turtle.Actions;
     using Turtle.Core;
     using Turtle.Exceptions;
@@ -29,6 +30,8 @@ namespace Turtle.GameManagement
 
         public GameManager(GameBoardDto gameBoardDto)
         {
+            Guard.Argument(gameBoardDto, nameof(gameBoardDto)).NotNull();
+
             this.gameBoard = new GameBoard(gameBoardDto.Size);
 
             this.turtle = new Turtle(new Transform(
@@ -64,6 +67,8 @@ namespace Turtle.GameManagement
 
         public void GameLoop(ActionsDto actionsDto)
         {
+            Guard.Argument(actionsDto, nameof(actionsDto)).NotNull();
+
             foreach (var move in actionsDto.Actions)
             {
                 if (move is Move)

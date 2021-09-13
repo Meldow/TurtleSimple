@@ -1,5 +1,7 @@
 namespace Turtle.Core
 {
+    using Dawn;
+
     public class Transform : ITransform
     {
         public static IVector2 North = new Vector2(0, -1);
@@ -18,8 +20,8 @@ namespace Turtle.Core
 
         public Transform(IVector2 location, IVector2 direction)
         {
-            this.Location = location;
-            this.Direction = direction;
+            this.Location = Guard.Argument(location, nameof(location)).NotNull().Value;
+            this.Direction = Guard.Argument(direction, nameof(direction)).NotNull().Value;
         }
 
         public void Move()

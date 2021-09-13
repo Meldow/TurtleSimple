@@ -1,5 +1,6 @@
 namespace Turtle.GameObjects.Movable
 {
+    using Dawn;
     using global::Turtle.Core;
 
     public class Turtle : ITurtle
@@ -8,7 +9,7 @@ namespace Turtle.GameObjects.Movable
 
         public Turtle(ITransform transform)
         {
-            this.Transform = transform;
+            this.Transform = Guard.Argument(transform, nameof(transform)).NotNull().Value;
         }
 
         public void Move()

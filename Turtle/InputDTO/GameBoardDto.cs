@@ -1,6 +1,7 @@
 namespace Turtle.InputDTO
 {
     using System.Collections.Generic;
+    using Dawn;
     using Turtle.Core;
 
     public class GameBoardDto
@@ -16,10 +17,10 @@ namespace Turtle.InputDTO
             IEnumerable<IVector2> minesLocations,
             IEnumerable<IVector2> exitsLocations)
         {
-            this.Size = size;
-            this.TurtleTransform = turtleTransform;
-            this.MinesLocations = minesLocations;
-            this.ExitsLocations = exitsLocations;
+            this.Size = Guard.Argument(size, nameof(size)).NotNull().Value;
+            this.TurtleTransform = Guard.Argument(turtleTransform, nameof(turtleTransform)).NotNull().Value;
+            this.MinesLocations = Guard.Argument(minesLocations, nameof(minesLocations)).NotNull().Value;
+            this.ExitsLocations = Guard.Argument(exitsLocations, nameof(exitsLocations)).NotNull().Value;
         }
     }
 }

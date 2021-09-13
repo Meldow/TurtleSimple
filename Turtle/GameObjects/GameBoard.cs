@@ -1,6 +1,7 @@
 namespace Turtle.GameObjects
 {
     using System;
+    using Dawn;
     using Turtle.Core;
     using Turtle.Exceptions;
     using Turtle.GameObjects.Static;
@@ -13,6 +14,8 @@ namespace Turtle.GameObjects
 
         public GameBoard(IVector2 size)
         {
+            Guard.Argument(size, nameof(size)).NotNull();
+
             this.xSize = size.X;
             this.ySize = size.Y;
             this.tiles = new IGameObject[size.X + 1, size.Y + 1]; // Add +1 to size to take into account 0 based arrays
@@ -20,8 +23,10 @@ namespace Turtle.GameObjects
 
         public void AddGameObject(IGameObject gameObject, IVector2 location)
         {
-            this.ValidatePosition(location);
+            Guard.Argument(gameObject, nameof(gameObject)).NotNull();
+            Guard.Argument(location, nameof(location)).NotNull();
 
+            this.ValidatePosition(location);
             try
             {
                 this.tiles[location.X, location.Y] = gameObject;
@@ -35,12 +40,16 @@ namespace Turtle.GameObjects
 
         public IGameObject GetGameObject(IVector2 location)
         {
+            Guard.Argument(location, nameof(location)).NotNull();
+
             this.ValidatePosition(location);
             return this.tiles[location.X, location.Y];
         }
 
         public void ValidatePosition(IVector2 location)
         {
+            Guard.Argument(location, nameof(location)).NotNull();
+
             if (location.X < 0
                 || location.X > this.xSize
                 || location.Y < 0
