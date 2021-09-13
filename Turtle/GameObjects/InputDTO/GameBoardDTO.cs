@@ -6,16 +6,18 @@ namespace Turtle.GameObjects.InputDTO
     public class GameBoardDTO
     {
         public readonly IVector2 Size;
-        public readonly IVector2 TurtleLocation;
-        public readonly IVector2 TurtleDirection;
+        public readonly ITransform TurtleTransform;
         public readonly IEnumerable<IVector2> MinesLocations;
         public readonly IEnumerable<IVector2> ExitsLocations;
 
-        public GameBoardDTO(IVector2 size, IVector2 turtleLocation, IVector2 turtleDirection, IEnumerable<IVector2> minesLocations, IEnumerable<IVector2> exitsLocations)
+        public GameBoardDTO(
+            IVector2 size,
+            ITransform turtleTransform,
+            IEnumerable<IVector2> minesLocations,
+            IEnumerable<IVector2> exitsLocations)
         {
             this.Size = size;
-            this.TurtleLocation = turtleLocation;
-            this.TurtleDirection = turtleDirection;
+            this.TurtleTransform = turtleTransform;
             this.MinesLocations = minesLocations;
             this.ExitsLocations = exitsLocations;
         }

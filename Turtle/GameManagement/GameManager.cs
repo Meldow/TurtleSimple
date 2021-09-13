@@ -29,20 +29,22 @@ namespace Turtle.GameManagement
         public GameManager(GameBoardDTO gameBoardDto)
         {
             this.gameBoard = new GameBoard(gameBoardDto.Size);
+
             this.turtle = new Turtle(new Transform(
                 new Vector2(
-                    gameBoardDto.TurtleLocation.X,
-                    gameBoardDto.TurtleLocation.Y),
+                    gameBoardDto.TurtleTransform.Location.X,
+                    gameBoardDto.TurtleTransform.Location.Y),
                 new Vector2(
-                    gameBoardDto.TurtleDirection.X,
-                    gameBoardDto.TurtleDirection.Y)));
+                    gameBoardDto.TurtleTransform.Direction.X,
+                    gameBoardDto.TurtleTransform.Direction.Y)));
+
             this.turtleStartingTransform = new Transform(
                 new Vector2(
-                    gameBoardDto.TurtleLocation.X,
-                    gameBoardDto.TurtleLocation.Y),
+                    gameBoardDto.TurtleTransform.Location.X,
+                    gameBoardDto.TurtleTransform.Location.Y),
                 new Vector2(
-                    gameBoardDto.TurtleDirection.X,
-                    gameBoardDto.TurtleDirection.Y));
+                    gameBoardDto.TurtleTransform.Direction.X,
+                    gameBoardDto.TurtleTransform.Direction.Y));
 
             try
             {
