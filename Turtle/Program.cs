@@ -12,8 +12,16 @@
     {
         public static async Task Main(string[] args)
         {
-            var gameManager = new GameManager(await CreateGameBoardDto(args[0]));
-            ExecuteMoves(args[1], gameManager);
+            try
+            {
+                var gameManager = new GameManager(await CreateGameBoardDto(args[0]));
+                ExecuteMoves(args[1], gameManager);
+            }
+            catch (OutOfBoardException exception)
+            {
+                Console.WriteLine(
+                    $"Turtle positioned outside of the board. No move sequence processed | Location: [{exception.Location.X},{exception.Location.Y}]");
+            }
         }
 
         private static async Task<GameBoardDto> CreateGameBoardDto(string gameSettingsFileName)
@@ -65,7 +73,8 @@
                 }
                 catch (UnexpectedInputException exception)
                 {
-                    Console.WriteLine($"Parsing sequence {sequence}: {exception.Message} Ignoring character | Input: '{exception.InputChar}'");
+                    Console.WriteLine(
+                        $"Parsing sequence {sequence}: {exception.Message} Ignoring character | Input: '{exception.InputChar}'");
                 }
             }
         }

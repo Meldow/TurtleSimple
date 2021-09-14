@@ -50,17 +50,7 @@ namespace Turtle.GameManagement
                     gameBoardDto.TurtleTransform.Direction.X,
                     gameBoardDto.TurtleTransform.Direction.Y));
 
-            try
-            {
-                this.gameBoard.ValidatePosition(this.turtle.Transform.Location);
-            }
-            catch (OutOfBoardException exception)
-            {
-                Console.WriteLine(
-                    $"{exception.Message} | Location: [{exception.Location.X},{exception.Location.Y}] , Object: [{exception.GameObject}]");
-
-                throw;
-            }
+            this.gameBoard.ValidatePosition(this.turtle.Transform.Location);
 
             PopulateBoard(this.gameBoard, gameBoardDto.MinesLocations, gameBoardDto.ExitsLocations);
         }
