@@ -19,15 +19,6 @@ namespace Turtle.GameManagement
 
         private ITransform turtleStartingTransform;
 
-        private enum GameState
-        {
-            Running,
-            FoundExit,
-            HitMine,
-            TurtleDroppedOut,
-            ForfeitRun,
-        }
-
         public GameManager(GameBoardDto gameBoardDto)
         {
             Guard.Argument(gameBoardDto, nameof(gameBoardDto)).NotNull();
@@ -53,6 +44,15 @@ namespace Turtle.GameManagement
             this.gameBoard.ValidatePosition(this.turtle.Transform.Location);
 
             PopulateBoard(this.gameBoard, gameBoardDto.MinesLocations, gameBoardDto.ExitsLocations);
+        }
+
+        private enum GameState
+        {
+            Running,
+            FoundExit,
+            HitMine,
+            TurtleDroppedOut,
+            ForfeitRun,
         }
 
         public void GameLoop(ActionsDto actionsDto)

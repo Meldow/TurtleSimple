@@ -5,12 +5,12 @@ namespace Turtle.GameObjects.Movable
 
     public class Turtle : ITurtle
     {
-        public ITransform Transform { get; set; }
-
         public Turtle(ITransform transform)
         {
             this.Transform = Guard.Argument(transform, nameof(transform)).NotNull().Value;
         }
+
+        public ITransform Transform { get; set; }
 
         public void Move()
         {

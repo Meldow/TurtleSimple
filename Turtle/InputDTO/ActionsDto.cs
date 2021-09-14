@@ -5,11 +5,11 @@ namespace Turtle.InputDTO
 
     public class ActionsDto
     {
-        public IEnumerable<IAction> Actions { get; set; }
-
         public ActionsDto(IEnumerable<IAction> actions)
         {
             this.Actions = actions;
         }
+
+        public IEnumerable<IAction> Actions { get; set; }
     }
 }

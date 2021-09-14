@@ -4,9 +4,9 @@ namespace Turtle.InputManagement
 
     public class ActionFileParser : FileParser
     {
-        const int mInt = 'm';
-        const int rInt = 'r';
-        const int newLineInt = '\n';
+        private const int MInt = 'm';
+        private const int RInt = 'r';
+        private const int NewLineInt = '\n';
         private int lastReadInput;
 
         public ActionFileParser(string fileName)
@@ -22,11 +22,11 @@ namespace Turtle.InputManagement
             this.lastReadInput = move;
             switch (move)
             {
-                case mInt:
+                case MInt:
                     return Action.Move;
-                case rInt:
+                case RInt:
                     return Action.Rotate;
-                case newLineInt:
+                case NewLineInt:
                     return Action.ForfeitRun;
                 default:
                     throw new UnexpectedInputException(
@@ -36,7 +36,7 @@ namespace Turtle.InputManagement
 
         public void SkipRestLine()
         {
-            while (this.lastReadInput != newLineInt && this.StreamReader.Peek() >= 0)
+            while (this.lastReadInput != NewLineInt && this.StreamReader.Peek() >= 0)
             {
                 this.lastReadInput = this.StreamReader.Read();
             }

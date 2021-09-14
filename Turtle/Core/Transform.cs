@@ -4,14 +4,10 @@ namespace Turtle.Core
 
     public class Transform : ITransform
     {
-        public static IVector2 North = new Vector2(0, -1);
-        public static IVector2 East = new Vector2(1, 0);
-        public static IVector2 South = new Vector2(0, 1);
-        public static IVector2 West = new Vector2(-1, 0);
-
-        public IVector2 Location { get; set; }
-
-        public IVector2 Direction { get; set; }
+        public static readonly IVector2 North = new Vector2(0, -1);
+        public static readonly IVector2 East = new Vector2(1, 0);
+        public static readonly IVector2 South = new Vector2(0, 1);
+        public static readonly IVector2 West = new Vector2(-1, 0);
 
         public Transform(IVector2 location)
             : this(location, North)
@@ -23,6 +19,10 @@ namespace Turtle.Core
             this.Location = Guard.Argument(location, nameof(location)).NotNull().Value;
             this.Direction = Guard.Argument(direction, nameof(direction)).NotNull().Value;
         }
+
+        public IVector2 Location { get; set; }
+
+        public IVector2 Direction { get; set; }
 
         public void Move()
         {

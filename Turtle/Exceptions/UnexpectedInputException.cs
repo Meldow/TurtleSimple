@@ -5,6 +5,7 @@ namespace Turtle.Exceptions
     public class UnexpectedInputException : Exception
     {
         public string Input { get; }
+
         public int InputChar { get; }
 
         public UnexpectedInputException()

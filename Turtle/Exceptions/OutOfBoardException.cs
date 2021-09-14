@@ -6,12 +6,11 @@ namespace Turtle.Exceptions
 
     public class OutOfBoardException : Exception
     {
-        public IVector2 Location { get; }
-        public IGameObject GameObject { get; }
-
         public OutOfBoardException()
         {
         }
+
+        public IVector2 Location { get; }
 
         public OutOfBoardException(string message)
             : base(message)
@@ -27,13 +26,6 @@ namespace Turtle.Exceptions
             : this(message)
         {
             this.Location = location;
-        }
-
-        public OutOfBoardException(string message, IVector2 location, IGameObject gameObject)
-            : this(message)
-        {
-            this.Location = location;
-            this.GameObject = gameObject;
         }
     }
 }

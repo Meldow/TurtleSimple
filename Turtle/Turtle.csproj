@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Dawn.Guard" Version="1.12.0" />
+        <PackageReference Include="Dawn.Guard" Version="1.12.0"/>
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -15,7 +15,7 @@
 
     <ItemGroup>
         <Content Include="..\README.md">
-          <Link>README.md</Link>
+            <Link>README.md</Link>
         </Content>
         <Content Include="game-settings.in">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -23,9 +23,5 @@
         <Content Include="moves.in">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Core\ObjectCopier.cs" />
     </ItemGroup>
 </Project>
