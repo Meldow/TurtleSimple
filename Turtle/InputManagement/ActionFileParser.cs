@@ -7,7 +7,7 @@ namespace Turtle.InputManagement
         private const int MInt = 'm';
         private const int RInt = 'r';
         private const int NewLineInt = '\n';
-        private int lastReadInput;
+        private int latestInputRead;
 
         public ActionFileParser(string fileName)
             : base(fileName)
@@ -19,7 +19,7 @@ namespace Turtle.InputManagement
         public Action GetNextMove()
         {
             var move = this.StreamReader.Read();
-            this.lastReadInput = move;
+            this.latestInputRead = move;
             switch (move)
             {
                 case MInt:
@@ -36,9 +36,9 @@ namespace Turtle.InputManagement
 
         public void SkipRestLine()
         {
-            while (this.lastReadInput != NewLineInt && this.StreamReader.Peek() >= 0)
+            while (this.latestInputRead != NewLineInt && this.StreamReader.Peek() >= 0)
             {
-                this.lastReadInput = this.StreamReader.Read();
+                this.latestInputRead = this.StreamReader.Read();
             }
         }
     }
